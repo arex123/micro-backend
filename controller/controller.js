@@ -1,4 +1,4 @@
-import Datetime from '../models/datetimeModel.js';
+import Datetime from '../models/dateTimeModel.js';
 
 export const backendCheck = (req,res)=>{
     console.log("backend in up")
