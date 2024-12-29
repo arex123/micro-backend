@@ -1,5 +1,12 @@
 import Datetime from '../models/datetimeModel.js';
 
+export const backendCheck = (req,res)=>{
+    console.log("backend in up")
+    res.json({
+        message:"Your backend is running"
+    })
+}
+
 export const saveDatetime = async (req, res) => {
     const { year, month, date, hours, minutes, seconds } = req.query;
 

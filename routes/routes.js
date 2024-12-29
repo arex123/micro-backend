@@ -1,8 +1,9 @@
 import express from 'express'
-import { saveDatetime } from '../controller/controller.js';
+import { backendCheck, saveDatetime } from '../controller/controller.js';
 
 const router = express.Router()
 
+router.get('/',backendCheck)
 router.get('/getdatetime', saveDatetime);
 
 
