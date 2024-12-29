@@ -9,6 +9,8 @@ const datetimeSchema = new mongoose.Schema({
     seconds: Number,
 }, { timestamps: true });
 
+datetimeSchema.index({ createdAt: -1 });
+
 const Datetime = mongoose.model('Datetime', datetimeSchema);
 
 export default Datetime;
