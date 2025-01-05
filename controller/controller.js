@@ -7,16 +7,38 @@ export const backendCheck = (req, res) => {
   });
 };
 
+
+let clients = [];
+
+export const sseHandler = (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  clients.push(res);
+
+  // Removing clients  on connection getting closed
+  req.on("close", () => {
+    clients = clients.filter(client => client !== res);
+  });
+};
+
+const notifyClients = (data) => {
+  // Send the data to all connected clients
+  clients.forEach(client => {
+    client.write(`data: ${JSON.stringify(data)}\n\n`);
+  });
+};
+
 export const saveDatetime = async (req, res) => {
+  console.log("saving")
   const { year, month, date, hours, minutes, seconds } = req.query;
 
-  // Validate input
   if (!year || !month || !date || !hours || !minutes || !seconds) {
     return res.status(400).send("Please provide complete date-time details.");
   }
 
   try {
-    // Save data to MongoDB
     const newDatetime = new Datetime({
       year: parseInt(year),
       month: parseInt(month),
@@ -25,7 +47,12 @@ export const saveDatetime = async (req, res) => {
       minutes: parseInt(minutes),
       seconds: parseInt(seconds),
     });
+
     const savedData = await newDatetime.save();
+
+    // Notify all SSE clients about the new data
+    notifyClients(savedData);
+    console.log("saved")
 
     res.json({
       message: "Date and time data saved successfully",
@@ -50,7 +77,8 @@ export const fetchRecent = async (req, res) => {
 
     res.status(200).json(latestDatetime);
   } catch (err) {
-    console.error(err);
+    console.error("err while fetching recent: ",err);
+
     res.status(500).json({ message: "Server error" });
   }
 };
