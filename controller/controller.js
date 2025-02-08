@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Datetime from "../models/dateTimeModel.js";
 
 export const backendCheck = (req, res) => {
@@ -11,16 +12,24 @@ export const backendCheck = (req, res) => {
 let clients = [];
 
 export const sseHandler = (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-
-  clients.push(res);
-
-  // Removing clients  on connection getting closed
-  req.on("close", () => {
-    clients = clients.filter(client => client !== res);
-  });
+  console.log("15")
+  try{
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    
+    console.log("21")
+    clients.push(res);
+    
+    // Removing clients  on connection getting closed
+    req.on("close", () => {
+      clients = clients.filter(client => client !== res);
+    });
+    
+    console.log("29")
+  }catch(err){
+    console.log("err ",err)
+  }
 };
 
 const notifyClients = (data) => {
@@ -29,6 +38,8 @@ const notifyClients = (data) => {
     client.write(`data: ${JSON.stringify(data)}\n\n`);
   });
 };
+
+
 
 export const saveDatetime = async (req, res) => {
   console.log("saving")
@@ -54,9 +65,14 @@ export const saveDatetime = async (req, res) => {
     notifyClients(savedData);
     console.log("saved")
 
+    const data = await DataModel.findOne();
+
     res.json({
       message: "Date and time data saved successfully",
-      data: savedData,
+      data:{
+        date:savedData,
+        state:data ? data.value : 0
+      } 
     });
   } catch (error) {
     console.error("Error saving data:", error.message);
