@@ -7,6 +7,7 @@ import {
   sseHandler,
 } from "../controller/controller.js";
 import mongoose from "mongoose";
+import DataModel from "../models/Dataschema.js";
 
 const router = express.Router();
 
@@ -21,10 +22,10 @@ router.get("/datetimes", getPaginatedDatetimes);
 
 
 
-const DataSchema = new mongoose.Schema({
-  value: Number,
-});
-const DataModel = mongoose.model("Data", DataSchema);
+// const DataSchema = new mongoose.Schema({
+//   value: Number,
+// });
+// const DataModel = mongoose.model("Data", DataSchema);
 
 // API to save value (0 or 1)
 router.post("/save", async (req, res) => {
