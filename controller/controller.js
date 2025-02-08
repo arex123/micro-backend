@@ -69,10 +69,11 @@ export const saveDatetime = async (req, res) => {
     const data = await DataModel.findOne();
 
     res.json({
-      message: "Date and time data saved successfully",
+      // message: "Date and time data saved successfully",
+      state:data ? data.value : 0,
       data:{
         date:savedData,
-        state:data ? data.value : 0
+        // state:data ? data.value : 0
       } 
     });
   } catch (error) {
