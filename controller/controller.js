@@ -70,11 +70,11 @@ export const saveDatetime = async (req, res) => {
 
     res.json({
       // message: "Date and time data saved successfully",
-      state:data ? data.value : 0,
-      data:{
-        date:savedData,
-        // state:data ? data.value : 0
-      } 
+      t:data ? data.value : 0,
+      // data:{
+      //   date:savedData,
+      //   // state:data ? data.value : 0
+      // } 
     });
   } catch (error) {
     console.error("Error saving data:", error.message);
